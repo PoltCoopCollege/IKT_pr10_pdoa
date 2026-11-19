@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#59141C">
+  <meta name="description" content="Генератор звіту до практичної роботи з хмарної бізнес-аналітики та мобільного моніторингу документообігу.">
+  <title>Генератор звіту — Хмарна бізнес-аналітика</title>
+  <style>
+    :root {
+      --burgundy: #59141C;
+      --gold: #E2D086;
+      --graphite: #3A3238;
+      --white: #FFFFFF;
+      --blue-light: #F0F5FA;
+      --gray: #D1D5DB;
+      --black: #111111;
+      --muted: #68717c;
+      --success: #287447;
+      --danger: #b42318;
+      --radius: 10px;
+      --shadow: 0 5px 18px rgba(35, 25, 28, .07);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #f6f7f9;
+      color: var(--black);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.5;
+    }
+    button, input, select, textarea { font: inherit; }
+    .site-header {
+      background: var(--burgundy);
+      color: var(--gold);
+      padding: 19px max(22px, calc((100% - 1160px) / 2));
+      border-bottom: 4px solid var(--gold);
+    }
+    .brand { max-width: 1160px; margin: 0 auto; display: flex; align-items: center; gap: 15px; }
+    .brand-mark {
+      width: 48px; height: 48px; border: 2px solid var(--gold); border-radius: 50%;
+      display: grid; place-items: center; font-size: 23px; flex: 0 0 auto;
+    }
+    .brand-name { font-weight: 700; font-size: 17px; line-height: 1.25; }
+    .brand-caption { color: rgba(226,208,134,.82); font-size: 12px; margin-top: 3px; }
+    main { max-width: 1160px; margin: 30px auto 60px; padding: 0 20px; }
+    .page-heading { margin-bottom: 22px; }
+    .eyebrow { color: var(--burgundy); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; }
+    h1 { color: var(--burgundy); font-size: clamp(25px, 3vw, 34px); line-height: 1.18; margin: 7px 0 8px; }
+    .subtitle { color: var(--muted); max-width: 850px; margin: 0; }
+    .layout { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(320px, .85fr); gap: 22px; align-items: start; }
+    .panel { background: var(--white); border: 1px solid var(--gray); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+    .panel-head { padding: 17px 20px; border-bottom: 1px solid var(--gray); display: flex; align-items: center; gap: 12px; }
+    .panel-head h2 { color: var(--burgundy); font-size: 18px; margin: 0; }
+    .step { width: 29px; height: 29px; border-radius: 50%; display: grid; place-items: center; flex: 0 0 auto; background: var(--burgundy); color: var(--gold); font-weight: 700; font-size: 13px; }
+    .panel-body { padding: 20px; }
+    .section-title { color: var(--burgundy); font-size: 16px; margin: 23px 0 13px; padding-bottom: 8px; border-bottom: 1px solid #e5e7eb; }
+    .section-title:first-child { margin-top: 0; }
+    .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .field { min-width: 0; margin-bottom: 14px; }
+    label { display: block; color: var(--graphite); font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+    .hint { display: block; color: var(--muted); font-size: 12px; font-weight: 400; margin-top: 4px; }
+    input, select, textarea {
+      width: 100%; min-height: 42px; border: 1px solid #bfc5cd; border-radius: 7px;
+      background: #fff; color: var(--black); padding: 9px 11px; outline: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    textarea { min-height: 94px; resize: vertical; }
+    input:focus, select:focus, textarea:focus { border-color: var(--burgundy); box-shadow: 0 0 0 3px rgba(89,20,28,.11); }
+    input::placeholder, textarea::placeholder { color: #9299a2; }
+    .question { margin: 0 0 15px; }
+    .question label { font-size: 13px; line-height: 1.45; }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+    .btn { border: 1px solid var(--burgundy); border-radius: 8px; min-height: 44px; padding: 10px 16px; font-weight: 700; cursor: pointer; transition: transform .12s, background .12s; }
+    .btn:active { transform: translateY(1px); }
+    .btn-primary { background: var(--burgundy); color: var(--gold); }
+    .btn-primary:hover { background: #431017; }
+    .btn-secondary { background: #fff; color: var(--burgundy); }
+    .btn-secondary:hover { background: var(--blue-light); }
+    .btn:focus-visible { outline: 3px solid rgba(226,208,134,.8); outline-offset: 2px; }
+    .preview-panel { position: sticky; top: 16px; }
+    .preview-body { padding: 19px; }
+    .preview-note { color: var(--muted); font-size: 12px; margin: 0 0 14px; }
+    .preview-sheet { border: 1px solid var(--gray); border-radius: 7px; background: #fff; padding: 20px; min-height: 280px; }
+    .preview-school { color: var(--burgundy); font-weight: 700; text-align: center; font-size: 11px; }
+    .preview-rule { height: 2px; background: var(--gold); margin: 12px 0 18px; }
+    .preview-title { text-align: center; font-size: 15px; font-weight: 700; color: var(--burgundy); margin: 0 0 6px; }
+    .preview-subtitle { text-align: center; font-size: 11px; color: var(--graphite); margin: 0 0 22px; }
+    .preview-line { font-size: 11px; border-bottom: 1px dotted #cbd0d6; padding: 7px 0; color: #4b5563; }
+    .preview-footer { margin-top: 23px; text-align: center; color: var(--muted); font-size: 10px; }
+    .status { min-height: 20px; margin-top: 10px; color: var(--success); font-size: 12px; }
+    .site-footer { text-align: center; color: var(--muted); font-size: 12px; padding: 20px; }
+    .required-note { color: var(--muted); font-size: 12px; margin: 0 0 15px; }
+    .required-note strong { color: var(--danger); }
+    .report { display: none; }
+
+    @media (max-width: 850px) {
+      main { margin-top: 22px; }
+      .layout { grid-template-columns: 1fr; }
+      .preview-panel { position: static; }
+    }
+    @media (max-width: 560px) {
+      .site-header { padding: 14px 16px; }
+      .brand-mark { width: 42px; height: 42px; }
+      .brand-name { font-size: 14px; }
+      main { padding: 0 12px; }
+      .panel-body { padding: 15px; }
+      .field-grid { grid-template-columns: 1fr; gap: 0; }
+      .actions { flex-direction: column; }
+      .btn { width: 100%; }
+    }
+
+    @media print {
+      @page { size: A4; margin: 18mm 17mm 18mm; }
+      body { background: #fff !important; color: #111 !important; font-size: 11pt; }
+      .site-header, main, .site-footer { display: none !important; }
+      .report { display: block !important; }
+      .report-header { text-align: center; border-bottom: 2px solid #59141C; padding-bottom: 12px; margin-bottom: 24px; }
+      .report-school { color: #59141C; font-weight: 700; font-size: 12pt; }
+      .report-work-title { font-weight: 700; font-size: 16pt; text-align: center; margin: 25px 0 7px; }
+      .report-topic { text-align: center; font-size: 11pt; margin-bottom: 25px; }
+      .report-meta { width: 100%; border-collapse: collapse; margin: 18px 0 25px; }
+      .report-meta td { border: 1px solid #aeb4bc; padding: 7px 9px; }
+      .report-meta td:first-child { width: 31%; font-weight: 700; background: #f0f5fa !important; }
+      .report h2 { color: #59141C; font-size: 13pt; margin: 22px 0 9px; page-break-after: avoid; }
+      .report h3 { color: #3A3238; font-size: 11pt; margin: 14px 0 5px; page-break-after: avoid; }
+      .report p { margin: 5px 0 9px; white-space: pre-wrap; overflow-wrap: anywhere; }
+      .report-answer { border: 1px solid #cbd0d6; padding: 8px 10px; min-height: 27px; white-space: pre-wrap; overflow-wrap: anywhere; }
+      .report-block { page-break-inside: avoid; }
+      .report-signatures { margin-top: 38px; display: flex; justify-content: space-between; gap: 25px; }
+      .report-signatures div { width: 48%; border-top: 1px solid #555; padding-top: 5px; font-size: 9pt; }
+      .report-foot { margin-top: 25px; text-align: center; color: #555; font-size: 9pt; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">П</div>
+      <div>
+        <div class="brand-name">Полтавський фаховий кооперативний коледж</div>
+        <div class="brand-caption">Навчальні цифрові інструменти · Генератор звітів</div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="page-heading">
+      <div class="eyebrow">Практична робота</div>
+      <h1>Генератор звіту</h1>
+      <p class="subtitle">Заповніть результати роботи з мобільним дашбордом Google Looker Studio. Після заповнення сформуйте звіт і збережіть його у форматі PDF.</p>
+    </div>
+
+    <div class="layout">
+      <section class="panel" aria-labelledby="form-title">
+        <div class="panel-head"><span class="step">1</span><h2 id="form-title">Заповнення звіту</h2></div>
+        <div class="panel-body">
+          <p class="required-note"><strong>*</strong> Обов'язкові поля</p>
+          <form id="reportForm">
+            <h3 class="section-title">Відомості про студента</h3>
+            <div class="field-grid">
+              <div class="field"><label for="student">Прізвище та ім'я <strong>*</strong></label><input id="student" name="student" required placeholder="Наприклад, Петренко Іван"></div>
+              <div class="field"><label for="group">Група <strong>*</strong></label><input id="group" name="group" required placeholder="Наприклад, ПР-21"></div>
+              <div class="field"><label for="date">Дата виконання <strong>*</strong></label><input id="date" name="date" type="date" required></div>
+            </div>
+
+            <h3 class="section-title">Завдання 1. Інтерактивна фільтрація даних</h3>
+            <div class="field">
+              <label for="legalCost">Загальна вартість обробки документів у фільтрі «Юридичний відділ» <strong>*</strong></label>
+              <input id="legalCost" name="legalCost" required placeholder="Введіть значення з дашборду">
+              <span class="hint">Вкажіть суму та одиницю вимірювання, якщо вона відображена у звіті.</span>
+            </div>
+            <div class="field-grid">
+              <div class="field"><label for="leadingCategory">Категорія-лідер за кількістю записів <strong>*</strong></label><input id="leadingCategory" name="leadingCategory" required placeholder="Назва категорії"></div>
+              <div class="field"><label for="leadingCount">Кількість записів у категорії-лідері</label><input id="leadingCount" name="leadingCount" inputmode="numeric" placeholder="Кількість"></div>
+            </div>
+            <div class="field">
+              <label for="courtDepartment">Підрозділ із найбільшою кількістю документів категорії «Судова практика» <strong>*</strong></label>
+              <select id="courtDepartment" name="courtDepartment" required>
+                <option value="">Оберіть підрозділ</option>
+                <option>Юридичний відділ</option><option>Кадрове управління</option><option>Канцелярія</option><option>Архівний відділ</option>
+              </select>
+            </div>
+
+            <h3 class="section-title">Завдання 2. Порівняльний аналіз</h3>
+            <div class="field-grid">
+              <div class="field"><label for="lowestDepartment">Підрозділ із найменшою сумарною вартістю <strong>*</strong></label>
+                <select id="lowestDepartment" name="lowestDepartment" required>
+                  <option value="">Оберіть підрозділ</option>
+                  <option>Юридичний відділ</option><option>Кадрове управління</option><option>Канцелярія</option><option>Архівний відділ</option>
+                </select>
+              </div>
+              <div class="field"><label for="lowestCost">Сумарна вартість обробки</label><input id="lowestCost" name="lowestCost" placeholder="Значення з дашборду"></div>
+            </div>
+            <div class="field">
+              <label for="conclusion">Управлінський висновок (3–4 речення) <strong>*</strong></label>
+              <textarea id="conclusion" name="conclusion" required minlength="30" placeholder="Опишіть переваги мобільного дашборду та можливе управлінське рішення керівника..."></textarea>
+              <span class="hint">Згадайте оперативність фільтрації, наочність показників і рішення щодо розподілу навантаження або організації діловодства.</span>
+            </div>
+
+            <h3 class="section-title">Контрольні запитання</h3>
+            <div class="question"><label for="q1">1. Що таке бізнес-аналітика (BI) та яку роль відіграють хмарні дашборди в управлінні документообігом та правовим супроводом? <strong>*</strong></label><textarea id="q1" name="q1" required placeholder="Ваша відповідь"></textarea></div>
+            <div class="question"><label for="q2">2. Чим відрізняється робота з інтерактивним візуальним звітним дашбордом у Google Looker Studio від звичайного перегляду чи редагування таблиць на екрані смартфона? <strong>*</strong></label><textarea id="q2" name="q2" required placeholder="Ваша відповідь"></textarea></div>
+            <div class="question"><label for="q3">3. Яким чином оперативне налаштування фільтрів на мобільному дашборді допомагає швидко реагувати на зміни навантаження та контролювати строки опрацювання документів? <strong>*</strong></label><textarea id="q3" name="q3" required placeholder="Ваша відповідь"></textarea></div>
+
+            <div class="actions">
+              <button class="btn btn-primary" type="submit">Зберегти звіт у PDF</button>
+              <button class="btn btn-secondary" type="button" id="previewButton">Оновити перегляд</button>
+              <button class="btn btn-secondary" type="reset">Очистити форму</button>
+            </div>
+            <div class="status" id="status" role="status" aria-live="polite"></div>
+          </form>
+        </div>
+      </section>
+
+      <aside class="panel preview-panel" aria-labelledby="preview-title">
+        <div class="panel-head"><span class="step">2</span><h2 id="preview-title">Попередній перегляд</h2></div>
+        <div class="preview-body">
+          <p class="preview-note">Приклад титульної частини майбутнього PDF-звіту. Дані оновлюються під час заповнення форми.</p>
+          <div class="preview-sheet">
+            <div class="preview-school">ПОЛТАВСЬКИЙ ФАХОВИЙ<br>КООПЕРАТИВНИЙ КОЛЕДЖ</div>
+            <div class="preview-rule"></div>
+            <p class="preview-title">ЗВІТ</p>
+            <p class="preview-subtitle">до практичної роботи</p>
+            <div class="preview-line"><strong>Тема:</strong> Хмарна бізнес-аналітика та мобільний моніторинг показників документообігу й юридичного супроводу</div>
+            <div class="preview-line"><strong>Студент:</strong> <span data-preview="student">________________</span></div>
+            <div class="preview-line"><strong>Група:</strong> <span data-preview="group">________</span></div>
+            <div class="preview-line"><strong>Дата:</strong> <span data-preview="date">________</span></div>
+            <div class="preview-footer">Полтава · <span data-preview="year">2026</span></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">Полтавський фаховий кооперативний коледж</footer>
+
+  <article class="report" id="printReport">
+    <header class="report-header">
+      <div class="report-school">ПОЛТАВСЬКИЙ ФАХОВИЙ КООПЕРАТИВНИЙ КОЛЕДЖ</div>
+    </header>
+    <div class="report-work-title">ЗВІТ<br>до практичної роботи</div>
+    <div class="report-topic"><strong>Тема:</strong> Хмарна бізнес-аналітика та мобільний моніторинг показників документообігу й юридичного супроводу в Google Looker Studio</div>
+    <table class="report-meta">
+      <tr><td>Студент(ка)</td><td id="out-student"></td></tr>
+      <tr><td>Група</td><td id="out-group"></td></tr>
+      <tr><td>Дата виконання</td><td id="out-date"></td></tr>
+    </table>
+
+    <h2>Завдання 1. Інтерактивна фільтрація даних</h2>
+    <div class="report-block">
+      <h3>1.1. Аналіз підрозділу «Юридичний відділ»</h3>
+      <p><strong>Загальна вартість обробки документів:</strong></p><div class="report-answer" id="out-legalCost"></div>
+      <p><strong>Категорія документів із найбільшою кількістю записів:</strong></p><div class="report-answer" id="out-leadingCategory"></div>
+      <p><strong>Кількість записів:</strong></p><div class="report-answer" id="out-leadingCount"></div>
+    </div>
+    <div class="report-block">
+      <h3>1.2. Фільтрація за категорією «Судова практика»</h3>
+      <p><strong>Підрозділ із найбільшим обсягом документів цієї категорії:</strong></p><div class="report-answer" id="out-courtDepartment"></div>
+    </div>
+
+    <h2>Завдання 2. Порівняльний аналіз та управлінський висновок</h2>
+    <div class="report-block">
+      <p><strong>Підрозділ із найменшою сумарною вартістю обробки документів:</strong></p><div class="report-answer" id="out-lowestDepartment"></div>
+      <p><strong>Сумарна вартість обробки:</strong></p><div class="report-answer" id="out-lowestCost"></div>
+      <p><strong>Управлінський висновок:</strong></p><div class="report-answer" id="out-conclusion"></div>
+    </div>
+
+    <h2>Контрольні запитання</h2>
+    <div class="report-block"><h3>1. Що таке бізнес-аналітика (BI) та яку роль відіграють хмарні дашборди в управлінні документообігом та правовим супроводом?</h3><div class="report-answer" id="out-q1"></div></div>
+    <div class="report-block"><h3>2. Чим відрізняється робота з інтерактивним візуальним звітним дашбордом у Google Looker Studio від звичайного перегляду чи редагування таблиць на екрані смартфона?</h3><div class="report-answer" id="out-q2"></div></div>
+    <div class="report-block"><h3>3. Яким чином оперативне налаштування фільтрів на мобільному дашборді допомагає швидко реагувати на зміни навантаження та контролювати строки опрацювання документів?</h3><div class="report-answer" id="out-q3"></div></div>
+
+    <div class="report-signatures"><div>Підпис студента(ки)</div><div>Перевірив(ла)</div></div>
+    <div class="report-foot">Полтава, <span id="out-year"></span></div>
+  </article>
+
+  <script>
+    const form = document.getElementById('reportForm');
+    const status = document.getElementById('status');
+    const fields = ['student','group','date','legalCost','leadingCategory','leadingCount','courtDepartment','lowestDepartment','lowestCost','conclusion','q1','q2','q3'];
+    const today = new Date();
+    const localDate = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().slice(0,10);
+    document.getElementById('date').value = localDate;
+
+    function valueOf(id) { return document.getElementById(id).value.trim(); }
+    function setText(id, value) { document.getElementById(id).textContent = value || '—'; }
+    function formattedDate(value) {
+      if (!value) return '—';
+      const [y,m,d] = value.split('-');
+      return `${d}.${m}.${y}`;
+    }
+    function updatePreview() {
+      fields.forEach(id => {
+        const target = document.querySelector(`[data-preview="${id}"]`);
+        if (target) target.textContent = id === 'date' ? formattedDate(valueOf(id)) : (valueOf(id) || '________________');
+      });
+      const year = valueOf('date') ? valueOf('date').slice(0,4) : String(today.getFullYear());
+      document.querySelector('[data-preview="year"]').textContent = year;
+      setText('out-student', valueOf('student'));
+      setText('out-group', valueOf('group'));
+      setText('out-date', formattedDate(valueOf('date')));
+      setText('out-legalCost', valueOf('legalCost'));
+      setText('out-leadingCategory', valueOf('leadingCategory'));
+      setText('out-leadingCount', valueOf('leadingCount'));
+      setText('out-courtDepartment', valueOf('courtDepartment'));
+      setText('out-lowestDepartment', valueOf('lowestDepartment'));
+      setText('out-lowestCost', valueOf('lowestCost'));
+      setText('out-conclusion', valueOf('conclusion'));
+      setText('out-q1', valueOf('q1'));
+      setText('out-q2', valueOf('q2'));
+      setText('out-q3', valueOf('q3'));
+      setText('out-year', year);
+    }
+    form.addEventListener('input', updatePreview);
+    form.addEventListener('change', updatePreview);
+    document.getElementById('previewButton').addEventListener('click', () => {
+      updatePreview();
+      status.textContent = 'Попередній перегляд оновлено.';
+    });
+    form.addEventListener('reset', () => {
+      setTimeout(() => {
+        document.getElementById('date').value = localDate;
+        updatePreview();
+        status.textContent = 'Форму очищено.';
+      }, 0);
+    });
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+      updatePreview();
+      status.textContent = 'Відкриваємо вікно друку. Оберіть «Зберегти як PDF».';
+      window.print();
+    });
+    updatePreview();
+  </script>
+</body>
+</html>
